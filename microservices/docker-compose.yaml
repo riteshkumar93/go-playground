@@ -52,18 +52,19 @@ services:
 
   # In case you want to run Jaeger all-in-one in the compose
   # Uncomment jaeger service below and change jaeger-agent --collector.host-port to "jaeger:14267"
-  # jaeger:
-  #   image: jaegertracing/all-in-one:latest
-  #   ports:
-  #     - "6831:6831/udp"
-  #     - "14267:14267"
-  #     - "16686:16686"
-  #   networks:
-  #     - jaeger-network
+  jaeger:
+    image: jaegertracing/all-in-one:1.22
+    ports:
+      - "6831:6831/udp"
+      - "14268:14268"
+      - "14250:14250"
+      - "16686:16686"
+    networks:
+      - jaeger-network
 
   jaeger-agent:
-    image: jaegertracing/jaeger-agent
-    command: ["--collector.host-port=host.docker.internal:14267"]
+    image: jaegertracing/jaeger-agent:1.22
+    command: ["--reporter.grpc.host-port=jaeger:14250"]
     restart: unless-stopped
     networks:
       - jaeger-network
